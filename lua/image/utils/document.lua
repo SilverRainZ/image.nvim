@@ -121,6 +121,23 @@ local create_document_integration = function(config)
               math.floor(term_size.screen_cols / 2),
               0
             )
+
+            local aspect_ratio = image.image_width / image.image_height
+            local pixel_width = width * term_size.cell_width
+            local pixel_height = height * term_size.cell_height
+            local max_pixel_width = ctx.state.options.max_width
+            local max_pixel_height = ctx.state.options.max_height
+
+            if max_pixel_width ~= nil and pixel_width > max_pixel_width then
+              width = math.floor(max_pixel_width / term_size.cell_width)
+              height = math.floor(max_pixel_width / aspect_ratio / term_size.cell_height)
+            end
+
+            if max_pixel_height ~= nil and pixel_height > max_pixel_height then
+              height = math.floor(max_pixel_height / term_size.cell_height)
+              width = math.floor(max_pixel_height * aspect_ratio / term_size.cell_width)
+            end
+
             local win_config = {
               relative = "cursor",
               row = 1,
